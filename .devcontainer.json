@@ -1,0 +1,13 @@
+{
+  "name": "Arch Linux",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/zsh"
+      }
+    }
+  }
+}
