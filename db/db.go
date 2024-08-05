@@ -14,6 +14,7 @@ func VerifyExistingDBs() []string {
 	}
 
 	var dbFiles []string
+	dbFiles = append(dbFiles, "Criar nova conta")
 	for _, file := range files {
 		if !file.IsDir() && filepath.Ext(file.Name()) == ".db" {
 			dbFiles = append(dbFiles, file.Name())

@@ -3,10 +3,12 @@ package main
 import (
 	"main/tui"
 
-	"github.com/rivo/tview"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
-	app := tview.NewApplication()
-	tui.ShowDataBaseOptions(app)
+	p := tea.NewProgram(tui.SelectDBInitialModel())
+	if _, err := p.Run(); err != nil {
+		panic(err)
+	}
 }
