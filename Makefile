@@ -1,40 +1,26 @@
-BINARY_NAME=personal-finances
-BUILD_DIR=build
+BINARY_NAME=personal-budget
 RELEASE_DIR=release
 
-.PHONY: build run clean release debug linux windows
-
-build:
-ifeq ($(shell uname -s), Linux)
-	$(MAKE) linux
+GOARCH = amd64
+BUILD_MODE=debug
+GO_GCFLAGS=-N -l
+ifeq ($(shell uname -s),Linux)
+	GOOS := linux
 else
-	$(MAKE) windows
+	ifeq ($(OS),Windows_NT)
+		GOOS := windows
+	else
+		$(error Sistema operacional não suportado)
+	endif
 endif
 
-run:
-	@$(RELEASE_DIR)/$(BINARY_NAME)-$(GOOS)-$(GOARCH)
+.PHONY: run clean release debug
+
+run: clean build
+	@$(RELEASE_DIR)/$(BINARY_NAME)-$(GOOS)-$(GOARCH)-$(BUILD_MODE)
+
+build: clean
+	@go build -gcflags="$(GO_GCFLAGS)" -ldflags="$(GO_LDFLAGS)" -o $(RELEASE_DIR)/$(BINARY_NAME)-$(GOOS)-$(GOARCH)-$(BUILD_MODE)
 
 clean:
-	@rm -f $(BUILD_DIR)/*
 	@rm -f $(RELEASE_DIR)/*
-
-release:
-	@$(MAKE) BUILD_MODE=release build
-
-debug:
-	@$(MAKE) BUILD_MODE=debug build
-
-linux:
-	@GOOS=linux GOARCH=amd64 $(MAKE) build
-
-windows:
-	@GOOS=windows GOARCH=amd64 $(MAKE) build
-
-ifeq ($(BUILD_MODE),release)
-GO_GCFLAGS=-trimpath=$(GOPATH)
-GO_LDFLAGS="-s -w"
-endif
-
-ifeq ($(BUILD_MODE),debug)
-GO_GCFLAGS=-N -l
-endif
